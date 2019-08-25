@@ -1,5 +1,5 @@
 from crypto_analytics.types import Interval
-from crypto_analytics.collection.data_source import CryptoCompareOHLCV, KrakenOHLCV
+from crypto_analytics.data_source import CryptoCompareOHLCV, KrakenOHLCV
 from crypto_analytics.controller import CollectionController
 from crypto_analytics.types.symbol import Symbol, SymbolPair
 

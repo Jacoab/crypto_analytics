@@ -3,11 +3,10 @@ import numpy as np
 import requests
 from typing import Dict, Union, Optional, cast
 
-from crypto_analytics.collection.data_source import OHLCVDataSource
+from crypto_analytics.data_source import OHLCVDataSource
 from crypto_analytics.types import Interval
 from crypto_analytics.types.symbol import SymbolPair, KrakenSymbolPairConverter
 from crypto_analytics import utils
-from crypto_analytics.utils.typing import unwrap
 
 class KrakenOHLCV(OHLCVDataSource):
     max_rows = 719
@@ -27,16 +26,14 @@ class KrakenOHLCV(OHLCVDataSource):
         self._converted_pair = KrakenSymbolPairConverter.from_pair(self.pair)
 
     def fetch(self) -> pd.DataFrame:
-        self.prevalidate()
-
         # configure endpoint and parameters
         endpoint = 'https://api.kraken.com/0/public/OHLC'
-        interval_duration = self.interval.to_unix_time()
+        interval_duration = self.interval.unix
         candle_time = utils.time.candle_time(self.interval, self.to_time)
         since = candle_time - self.rows * interval_duration
         parameters: Dict[str, Union[int, str]] = {
             'pair': self._converted_pair,
-            'interval': unwrap(self._interval_value),
+            'interval': utils.typing.unwrap(self._interval_value),
             'since': since,
         }
 
@@ -55,10 +52,8 @@ class KrakenOHLCV(OHLCVDataSource):
         data = data.head(self.rows)
         data = data.astype(KrakenOHLCV.dtypes)
 
-        self._last_valid_time = int(response.json().get('result', {}).get('last'))
+        self._last_valid_time = last_valid_time
         self._data = data
-
-        self.validate()
         return self.data
 
     @property

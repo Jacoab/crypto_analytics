@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from crypto_analytics.collection.data_source import KrakenOHLCV
+from crypto_analytics.data_source import KrakenOHLCV
 from crypto_analytics.types import Interval
 from crypto_analytics.types.symbol import Symbol, SymbolPair
 
@@ -14,7 +14,7 @@ rows = 5
 output_file = 'k_collect_data.csv'
 
 candles = KrakenOHLCV(interval, pair, rows)
-candles.fetch()
+candles.validated_fetch()
 print(candles.data)
 print('time:', candles.time.head(), sep='\n')
 print('open:', candles.open.head(), sep='\n')

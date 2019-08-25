@@ -10,7 +10,7 @@ def candle_time(interval: Interval, timestamp: Optional[RealNumber] = None) -> i
     Returns the last completed candle time before a given timestamp
     if no timestamp is provided it will use the current time
     """
-    interval_duration = interval.to_unix_time()
+    interval_duration = interval.unix
     unwrapped_time = coalesce(timestamp, lambda: time.time())
     candel_close_time = int(unwrapped_time // interval_duration) * interval_duration
     candel_open_time = candel_close_time - interval_duration

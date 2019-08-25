@@ -6,8 +6,8 @@ class MergeType(Enum):
     INTERSECT = 'INTERSECT'
     UNION = 'UNION'
 
-    def to_merge_how(self) -> str:
-        """ Converts merge type to a `how` parameter for using `pd.merge` """
+    def pandas(self) -> str:
+        """ Converts merge type to a pandas `how` parameter for using `pd.merge` """
         switch = {
             MergeType.UNION: 'outer',
             MergeType.INTERSECT: 'inner',

@@ -12,8 +12,8 @@ class DataSource(ABC):
     """ An abstract base class for all data sources """
 
     def __init__(self):
-        self._data = None
         super().__init__()
+        self._data = None
 
     @property
     def data(self) -> Optional[pd.DataFrame]:
@@ -31,6 +31,7 @@ class DataSource(ABC):
         else:
             data.to_csv(filepath, index=False)
 
+    @abstractmethod
     def prevalidate(self):
         pass
 
@@ -42,18 +43,23 @@ class DataSource(ABC):
         if not isinstance(self.data, pd.DataFrame):
             raise ValueError('The data is not an instance of the pandas DataFrame type')
 
+    def validated_fetch(self) -> pd.DataFrame:
+        self.prevalidate()
+        data = self.fetch()
+        self.validate()
+        return data
+
 
 
 class TimeSeriesDataSource(DataSource):
     """ An abstract class for all time series data sources """
     max_rows: int
-    default_rows: int
 
     def __init__(self, interval: Interval, rows: Optional[int] = None):
+        super().__init__()
         self._interval = interval
         self._rows = coalesce(rows, type(self).max_rows)
         self._to_time: Optional[RealNumber] = None
-        super().__init__()
 
     @property
     def interval(self) -> Interval:
@@ -73,7 +79,7 @@ class TimeSeriesDataSource(DataSource):
 
     @property
     def fetch_period(self) -> RealNumber:
-        return self.interval.to_unix_time() * self.rows
+        return self.interval.unix * self.rows
 
     def prevalidate(self):
         super().prevalidate()
@@ -84,7 +90,7 @@ class TimeSeriesDataSource(DataSource):
     def validate(self):
         super().validate()
         # check for gaps in data
-        gaps = self.time.loc[self.time.diff() != self.interval.to_unix_time()]
+        gaps = self.time.loc[self.time.diff() != self.interval.unix]
         gaps = gaps.drop(gaps.head(1).index)
         if len(gaps.index) > 0:
             message = '{} is missing rows at indices: {}'.format(self, gaps.index.values)
@@ -104,8 +110,8 @@ class TimeSeriesDataSource(DataSource):
 class OHLCDataSource(TimeSeriesDataSource):
     """ An abstract class for all OHLC data sources """
     def __init__(self, interval: Interval, pair: SymbolPair, rows: Optional[int] = None):
-        self.pair = pair
         super().__init__(interval, rows)
+        self.pair = pair
 
     @abstractproperty
     def open(self) -> pd.Series:

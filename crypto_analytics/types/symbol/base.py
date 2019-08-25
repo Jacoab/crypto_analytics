@@ -49,7 +49,7 @@ class SymbolPairConverter(Generic[ConvertedType], metaclass=ABCMeta):
 
 class SymbolPairConverterError(Exception):
     def __init__(self, obj: Any, standard: SymbolStandard):
-        self.obj = obj
-        self.standard = standard
         message = 'Conversion from: {0} failed with standard {1}'.format(obj, standard)
         super().__init__(message)
+        self.obj = obj
+        self.standard = standard
