@@ -2,16 +2,16 @@ import pytest
 
 from crypto_analytics.types import Interval
 
-# test to_unix_time
+# test unix
 
-test_to_unix_time_data = [
+test_unix_data = [
     (Interval.MINUTE, 60),
     (Interval.HOUR, 60*60),
     (Interval.DAY, 60*60*24),
 ]
-@pytest.mark.parametrize("interval,expected", test_to_unix_time_data)
-def test_interval_to_unix_time(interval, expected):
+@pytest.mark.parametrize("interval,expected", test_unix_data)
+def test_interval_unix(interval, expected):
     # when
-    unix_time = interval.to_unix_time()
+    unix_time = interval.unix
     # then
     assert unix_time == expected

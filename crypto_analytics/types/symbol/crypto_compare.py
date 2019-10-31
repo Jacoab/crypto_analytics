@@ -5,6 +5,7 @@ from .base import SymbolStandard, Symbol, SymbolPair, SymbolPairConverter, Symbo
 CryptoCompareSymbolPair = NamedTuple('CryptoCompareSymbolPair', [('fsym', str), ('tsym', str)])
 
 class CryptoCompareSymbolPairConverter(SymbolPairConverter[CryptoCompareSymbolPair]):
+    standard = SymbolStandard.CRYPTO_COMPARE
     # data from https://min-api.cryptocompare.com/documentation?key=PairMapping&cat=pairMappingMappedSymbolEndpoint
     from_symbol_map = {
         # Fiat
@@ -40,9 +41,6 @@ class CryptoCompareSymbolPairConverter(SymbolPairConverter[CryptoCompareSymbolPa
         'XRP': Symbol.XRP,
     }
 
-    @classmethod
-    def get_standard(cls) -> SymbolStandard:
-        return SymbolStandard.CRYPTO_COMPARE
 
     @classmethod
     def from_pair(cls, pair: SymbolPair) -> CryptoCompareSymbolPair:
@@ -50,7 +48,7 @@ class CryptoCompareSymbolPairConverter(SymbolPairConverter[CryptoCompareSymbolPa
             fsym = cls.from_symbol_map[pair.fsym]
             tsym = cls.from_symbol_map[pair.tsym]
         except:
-            raise SymbolPairConverterError(pair, cls.get_standard())
+            raise SymbolPairConverterError(pair, cls.standard)
         return CryptoCompareSymbolPair(fsym, tsym)
 
     @classmethod
@@ -59,5 +57,5 @@ class CryptoCompareSymbolPairConverter(SymbolPairConverter[CryptoCompareSymbolPa
             fsym = cls.to_symbol_map[value.fsym]
             tsym = cls.to_symbol_map[value.tsym]
         except:
-            raise SymbolPairConverterError(value, cls.get_standard())
+            raise SymbolPairConverterError(value, cls.standard)
         return SymbolPair(fsym, tsym)

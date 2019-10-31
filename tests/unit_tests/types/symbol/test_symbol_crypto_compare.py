@@ -17,7 +17,7 @@ def test_crypto_compare_symbol_pair_converter_map_bijection():
 
 def test_crypto_compare_symbol_pair_converter_get_standard():
     # when
-    standard = CryptoCompareSymbolPairConverter.get_standard()
+    standard = CryptoCompareSymbolPairConverter.standard
     # then
     expected = SymbolStandard.CRYPTO_COMPARE
     assert standard == expected
@@ -38,8 +38,11 @@ def test_crypto_compare_symbol_pair_converter_from_pair_failure():
     # given
     pair = SymbolPair(None, None)
     # when/then
-    with pytest.raises(SymbolPairConverterError):
+    with pytest.raises(SymbolPairConverterError) as excinfo:
         converted = CryptoCompareSymbolPairConverter.from_pair(pair)
+    # then
+    expected = SymbolPairConverterError(pair, SymbolStandard.CRYPTO_COMPARE)
+    assert str(excinfo.value) == str(expected)
 
 
 # test to_pair
@@ -57,5 +60,8 @@ def test_crypto_compare_symbol_pair_converter_to_pair_failure():
     # given
     value = None
     # when/then
-    with pytest.raises(SymbolPairConverterError):
+    with pytest.raises(SymbolPairConverterError) as excinfo:
         converted = CryptoCompareSymbolPairConverter.to_pair(value)
+    # then
+    expected = SymbolPairConverterError(value, SymbolStandard.CRYPTO_COMPARE)
+    assert str(excinfo.value) == str(expected)

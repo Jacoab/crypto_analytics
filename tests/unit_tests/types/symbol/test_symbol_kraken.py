@@ -17,7 +17,7 @@ def test_kraken_symbol_pair_converter_map_bijection():
 
 def test_kraken_symbol_pair_converter_get_standard():
     # when
-    standard = KrakenSymbolPairConverter.get_standard()
+    standard = KrakenSymbolPairConverter.standard
     # then
     expected = SymbolStandard.KRAKEN
     assert standard == expected
@@ -38,8 +38,11 @@ def test_kraken_symbol_pair_converter_from_pair_failure():
     # given
     pair = SymbolPair(None, None)
     # when/then
-    with pytest.raises(SymbolPairConverterError):
+    with pytest.raises(SymbolPairConverterError) as excinfo:
         converted = KrakenSymbolPairConverter.from_pair(pair)
+    # then
+    expected = SymbolPairConverterError(pair, SymbolStandard.KRAKEN)
+    assert str(excinfo.value) == str(expected)
 
 
 # test to_pair
@@ -57,5 +60,8 @@ def test_kraken_symbol_pair_converter_to_pair_failure():
     # given
     value = None
     # when/then
-    with pytest.raises(SymbolPairConverterError):
+    with pytest.raises(SymbolPairConverterError) as excinfo:
         converted = KrakenSymbolPairConverter.to_pair(value)
+    # then
+    expected = SymbolPairConverterError(value, SymbolStandard.KRAKEN)
+    assert str(excinfo.value) == str(expected)

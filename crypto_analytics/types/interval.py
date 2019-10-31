@@ -6,7 +6,8 @@ class Interval(Enum):
     HOUR = 'HOUR'
     DAY = 'DAY'
 
-    def to_unix_time(self) -> int:
+    @property
+    def unix(self) -> int:
         switch = {
             Interval.MINUTE: 60,
             Interval.HOUR: 60*60,

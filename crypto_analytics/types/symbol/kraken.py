@@ -2,6 +2,7 @@ from .base import (SymbolStandard, Symbol, SymbolPair, SymbolPairConverter,
     SymbolPairConverterError)
 
 class KrakenSymbolPairConverter(SymbolPairConverter[str]):
+    standard = SymbolStandard.KRAKEN
     # data from https://api.kraken.com/0/public/AssetPairs
     from_pair_map = {
         # to BITCOIN
@@ -42,15 +43,11 @@ class KrakenSymbolPairConverter(SymbolPairConverter[str]):
     }
 
     @classmethod
-    def get_standard(cls) -> SymbolStandard:
-        return SymbolStandard.KRAKEN
-
-    @classmethod
     def from_pair(cls, pair: SymbolPair) -> str:
         try:
             result = cls.from_pair_map[pair]
         except:
-            raise SymbolPairConverterError(pair, cls.get_standard())
+            raise SymbolPairConverterError(pair, cls.standard)
         return result
 
     @classmethod
@@ -58,5 +55,5 @@ class KrakenSymbolPairConverter(SymbolPairConverter[str]):
         try:
             result = cls.to_pair_map[value]
         except:
-            raise SymbolPairConverterError(value, cls.get_standard())
+            raise SymbolPairConverterError(value, cls.standard)
         return result

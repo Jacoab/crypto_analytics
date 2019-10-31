@@ -13,3 +13,13 @@ def tmp_dir():
 
     # teardown
     shutil.rmtree(tmp_dir)
+
+@pytest.fixture(scope='function')
+def init_abc(mocker):
+    """ initializes an abstract base class for you """
+    def setup_fn(ABC, *args, **kwargs):
+        mocker.patch.object(ABC, '__abstractmethods__')
+        ABC.__abstractmethods__ = set()
+        return ABC(*args, **kwargs)
+
+    return setup_fn

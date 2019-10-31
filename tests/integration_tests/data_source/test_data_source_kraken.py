@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from pandas.util.testing import assert_frame_equal, assert_series_equal
 
-from crypto_analytics.collection.data_source import KrakenOHLCV
+from crypto_analytics.data_source import KrakenOHLCV
 from crypto_analytics.types import Interval
 from crypto_analytics.types.symbol import Symbol, SymbolPair, KrakenSymbolPairConverter
 from crypto_analytics import utils
@@ -22,7 +22,7 @@ def test_kraken_ohlcv_fetch_past():
     # given
     pair = SymbolPair(Symbol.BITCOIN, Symbol.USD)
     candles = KrakenOHLCV(Interval.DAY, pair, 2)
-    candles.set_to_time(1562197365.6)
+    candles.to_time = 1562197365.6
     # when
     data = candles.fetch()
     # then
